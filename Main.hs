@@ -5,15 +5,29 @@ import Text.XML.HXT.Core
 
 main = do
   runX (readDocument [ withValidate no, withParseHTML yes, withInputEncoding utf8 ] ""
-        >>> processTopDown process1
+        >>> processChildren (process1 `when` isElem) 
         >>> writeDocument [] "-" 
         )
 
 process1 :: ArrowXml a => a XmlTree XmlTree
 process1 = 
-      addText
-      `when`
-      (isElem >>> hasName "p")
+        addNav >>>
+        processTopDown (
+
+            withoutNav (
+              
+              getChildren
+              `when` hasName "p"
+            
+            )
+        )
+        >>> remNav
+
+
+deleteExtraParas :: ArrowXml a => a XmlTree XmlTree
+deleteExtraParas = addNav
+    >>> (getChildren >>> withoutNav (isElem >>> hasName "p"))
+    >>> remNav
 
 addText :: ArrowXml a => a XmlTree XmlTree
 addText = replaceChildren (getChildren <+> txt " test")
