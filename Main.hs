@@ -6,16 +6,18 @@ import Text.XML.HXT.Core
 main = do
   runX (readDocument [ withValidate no, withParseHTML yes, withInputEncoding utf8 ] ""
         >>> processTopDown process1
-        >>> writeDocument [ ] "-" 
+        >>> writeDocument [] "-" 
         )
 
 process1 :: ArrowXml a => a XmlTree XmlTree
 process1 = 
-      (returnA
-       <+>
-       getChildren 
-      )
-      `when` (hasName "h1")
+      addText
+      `when`
+      (isElem >>> hasName "p")
+
+addText :: ArrowXml a => a XmlTree XmlTree
+addText = replaceChildren (getChildren <+> txt " test")
+      
         
 
 {-
