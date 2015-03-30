@@ -15,7 +15,7 @@ process1 =
         processTopDown (
 
               (returnA
-                <+> (followingSiblingAxis >>> filterAxis (hasName "p") >>> getChildren)
+                <+> (followingSiblingAxis >>> filterAxis (hasName "p") )
               )
 
               `when` withoutNav (hasName "p")
