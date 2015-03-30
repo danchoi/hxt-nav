@@ -14,12 +14,12 @@ process1 =
         addNav >>>
         processTopDown (
 
-            withoutNav (
-              
-              getChildren
-              `when` hasName "p"
+              (returnA
+                <+> (followingSiblingAxis >>> filterAxis (hasName "p") >>> getChildren)
+              )
+
+              `when` withoutNav (hasName "p")
             
-            )
         )
         >>> remNav
 
