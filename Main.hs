@@ -11,12 +11,9 @@ main = do
 
 process1 :: ArrowXml a => a XmlTree XmlTree
 process1 = 
-      (getChildren
+      (returnA
        <+>
-        withNav (
-          followingSiblingAxis >>> filterAxis (hasName "p")
-          >>> none
-        )
+       getChildren 
       )
       `when` (hasName "h1")
         
